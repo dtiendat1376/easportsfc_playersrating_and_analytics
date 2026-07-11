@@ -6,9 +6,21 @@ export function num(v) {
 }
 
 export function avg(values) {
+  if (!values.length) return 0;
   const clean = values.map(num);
   return clean.reduce((a, b) => a + b, 0) / clean.length;
 }
+
+export const rankingScore = {
+  overall:     (p) => num(p.overallRating),
+  position:    (p) => num(p.overallRating),
+  league:      (p) => num(p.overallRating),
+  nationality: (p) => num(p.overallRating),
+  attacking:   (p) => avg([p.pac, p.sho, p.pas, p.dri, p.finishing, p.positioning]),
+  defending:   (p) => avg([p.def, p.interceptions, p.defensiveAwareness, p.standingTackle, p.slidingTackle]),
+  physical:    (p) => avg([p.phy, p.strength, p.stamina, p.aggression, p.jumping]),
+  goalkeeping: (p) => avg([p.gkDiving, p.gkHandling, p.gkKicking, p.gkPositioning, p.gkReflexes]),
+};
 
 export function csvToObjects(text) {
   const rows = [];
@@ -39,7 +51,7 @@ export function csvToObjects(text) {
 
 export function fullName(player) {
   if (player.commonName) return player.commonName;
-  return [player.firstName, player.lastName].filter(Boolean).join(" ");
+  return [player.firstName, player.lastName].filter(Boolean).join(" ") || `Player #${player.id}`;
 }
 
 export function optionsFrom(players, key) {
@@ -113,10 +125,9 @@ export async function loadCsv(path) {
 }
 
 export async function loadAllDatasets() {
-  const [fc26, fc25] = await Promise.all([
-    loadCsv("data/ea_fc26_players.csv"),
-    loadCsv("data/ea_fc25_players.csv"),
-  ]);
+  const selects = document.getElementById("datasetSelect").options;
+  const paths = Array.from(selects).map(o => o.value);
+  const [fc26, fc25] = await Promise.all(paths.map(loadCsv));
   state.datasets.fc26 = fc26;
   state.datasets.fc25 = fc25;
 }

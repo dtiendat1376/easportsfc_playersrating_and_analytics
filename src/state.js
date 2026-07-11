@@ -7,17 +7,6 @@ export const state = {
   },
 };
 
-export const rankingScore = {
-  overall:     (p) => num(p.overallRating),
-  position:    (p) => num(p.overallRating),
-  league:      (p) => num(p.overallRating),
-  nationality: (p) => num(p.overallRating),
-  attacking:   (p) => avg([p.pac, p.sho, p.pas, p.dri, p.finishing, p.positioning]),
-  defending:   (p) => avg([p.def, p.interceptions, p.defensiveAwareness, p.standingTackle, p.slidingTackle]),
-  physical:    (p) => avg([p.phy, p.strength, p.stamina, p.aggression, p.jumping]),
-  goalkeeping: (p) => avg([p.gkDiving, p.gkHandling, p.gkKicking, p.gkPositioning, p.gkReflexes]),
-};
-
 export const rankingLabels = {
   overall:     "Overall",
   position:    "Position",
@@ -44,4 +33,5 @@ export const compareMetrics = [
   "acceleration", "sprintSpeed", "finishing", "positioning",
   "interceptions", "standingTackle", "strength", "stamina",
   "gkDiving", "gkHandling", "gkKicking", "gkPositioning", "gkReflexes",
+  "playStyles", "playStylesPlus",
 ];

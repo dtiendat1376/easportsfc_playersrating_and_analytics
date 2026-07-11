@@ -105,37 +105,45 @@
           <tbody></tbody>
         </table>
       </div>
+      <div id="pagination" class="pagination" hidden>
+        <button id="prevPage" type="button">← Prev</button>
+        <span id="pageInfo"></span>
+        <button id="nextPage" type="button">Next →</button>
+      </div>
     </section>
 
     <section class="card compare">
       <div class="results-head">
         <h3>Player Compare</h3>
-        <p>Compare player vs player, average, or FC26 vs FC25</p>
+        <p>Search and compare two players side by side</p>
       </div>
       <div class="control-grid compare-grid">
         <label>
-          Compare Mode
-          <select id="compareMode">
-            <option value="player_vs_player">Player vs Player</option>
-            <option value="player_vs_average">Player vs Average</option>
-            <option value="fc26_vs_fc25">FC26 vs FC25 (same player)</option>
-          </select>
-        </label>
-        <label>
           Player A
-          <select id="comparePlayerA"></select>
+          <div class="player-search-wrap">
+            <input id="compareSearchInputA" type="text" placeholder="Search player A…" autocomplete="off" />
+            <div id="compareDropdownA" class="search-dropdown" hidden></div>
+          </div>
         </label>
         <label>
           Player B
-          <select id="comparePlayerB"></select>
+          <div class="player-search-wrap">
+            <input id="compareSearchInputB" type="text" placeholder="Search player B…" autocomplete="off" />
+            <div id="compareDropdownB" class="search-dropdown" hidden></div>
+          </div>
         </label>
         <button id="compareBtn" class="apply-btn" type="button">Run Compare</button>
       </div>
-      <div class="table-wrap compare-wrap">
-        <table id="compareTable">
-          <thead></thead>
-          <tbody></tbody>
-        </table>
+      <div class="compare-vis">
+        <div class="table-wrap compare-wrap">
+          <table id="compareTable">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="radar-wrap">
+          <canvas id="radarChart"></canvas>
+        </div>
       </div>
     </section>
 
@@ -147,19 +155,19 @@
       <div class="chart-grid">
         <article>
           <h4>Position</h4>
-          <canvas id="chartPosition" width="600" height="280"></canvas>
+          <canvas id="chartPosition"></canvas>
         </article>
         <article>
           <h4>League</h4>
-          <canvas id="chartLeague" width="600" height="280"></canvas>
+          <canvas id="chartLeague"></canvas>
         </article>
         <article>
           <h4>Team</h4>
-          <canvas id="chartTeam" width="600" height="280"></canvas>
+          <canvas id="chartTeam"></canvas>
         </article>
         <article>
           <h4>Nationality</h4>
-          <canvas id="chartNationality" width="600" height="280"></canvas>
+          <canvas id="chartNationality"></canvas>
         </article>
       </div>
     </section>
@@ -167,27 +175,24 @@
     <section class="card simulator">
       <div class="results-head">
         <h3>Formation & Lineup Simulator</h3>
-        <p>Pick formation and assign players by role</p>
+        <p>Pick formation, customize roles, then click slots on the field to assign players</p>
       </div>
       <div class="control-grid compare-grid">
         <label>
-          Formation
-          <select id="formationSelect">
-            <option value="4-3-3">4-3-3</option>
-            <option value="4-2-3-1">4-2-3-1</option>
-            <option value="4-4-2">4-4-2</option>
-            <option value="3-5-2">3-5-2</option>
-            <option value="4-3-2-1">4-3-2-1</option>
-            <option value="3-4-3">3-4-3</option>
-            <option value="4-1-4-1">4-1-4-1</option>
-          </select>
+          Formation & Roles
+          <input id="formationInput" type="text" placeholder="e.g. 4-3-3 or 3-6-1 or GK,RB,CB,CB,CM,CM,CM,CM,CM,ST,ST" />
         </label>
-        <button id="buildLineupBtn" class="apply-btn" type="button">Build Lineup Slots</button>
+        <button id="buildLineupBtn" class="apply-btn" type="button">Build Lineup</button>
       </div>
-      <div id="lineupGrid" class="lineup-grid"></div>
+      <div id="fieldContainer" class="field-container" hidden>
+        <div class="soccer-field" id="soccerField"></div>
+        <div id="lineupAnalysis" class="lineup-analysis">
+          <p class="warn">Assign all 11 players to see lineup analysis.</p>
+        </div>
+      </div>
     </section>
   </main>
 
-  <script src="app.js"></script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>

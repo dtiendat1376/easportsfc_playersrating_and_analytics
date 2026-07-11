@@ -177,6 +177,29 @@ input:focus {
   margin-top: 10px;
 }
 
+.compare-vis {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.radar-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(8, 25, 39, 0.65);
+  border: 1px solid rgba(159, 187, 214, 0.2);
+  border-radius: 12px;
+  padding: 10px;
+}
+
+#radarChart {
+  width: 100%;
+  max-width: 380px;
+  height: 320px;
+}
+
 .compare-grid {
   grid-template-columns: repeat(4, minmax(180px, 1fr));
 }
@@ -203,32 +226,181 @@ input:focus {
 
 canvas {
   width: 100%;
-  height: auto;
+  height: 220px;
 }
 
-.lineup-grid {
-  margin-top: 12px;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
+/* ── Soccer Field ────────────────────────────────────────────────────── */
+
+.field-container {
+  margin-top: 14px;
 }
 
-.lineup-slot {
-  border: 1px solid rgba(159, 187, 214, 0.28);
-  background: rgba(6, 20, 31, 0.75);
-  border-radius: 10px;
-  padding: 8px;
-}
-
-.lineup-slot p {
-  margin: 0 0 6px;
-  color: var(--muted);
-  font-size: 0.85rem;
-}
-
-.lineup-slot select {
+.soccer-field {
+  position: relative;
   width: 100%;
+  max-width: 700px;
+  aspect-ratio: 2 / 3;
+  margin: 0 auto;
+  background: linear-gradient(135deg, #1a6b3c, #2b8c4e);
+  border: 3px solid rgba(255,255,255,0.25);
+  border-radius: 12px;
+  overflow: hidden;
 }
+
+/* Field markings */
+.soccer-field::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  width: 50%;
+  height: 50%;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.soccer-field::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(255,255,255,0.2);
+  pointer-events: none;
+}
+
+/* ── Soccer Field ────────────────────────────────────────────────────── */
+
+/* Player slot */
+.player-slot {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: grab;
+  z-index: 2;
+  user-select: none;
+}
+
+.player-slot:active {
+  cursor: grabbing;
+}
+
+.player-slot.active {
+  z-index: 20;
+  cursor: default;
+}
+
+.slot-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(8, 28, 44, 0.85);
+  border: 2px solid rgba(75, 209, 165, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: var(--muted);
+  transition: border-color 0.2s, transform 0.15s;
+}
+
+.slot-avatar.filled {
+  border-color: var(--accent);
+  background: rgba(8, 28, 44, 0.92);
+  color: var(--text);
+}
+
+.player-slot:hover .slot-avatar {
+  transform: scale(1.08);
+  border-color: var(--accent);
+}
+
+.slot-role {
+  font-size: 0.62rem;
+  color: rgba(255,255,255,0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: rgba(0,0,0,0.4);
+  padding: 1px 6px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.slot-name {
+  font-size: 0.62rem;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.7);
+  white-space: nowrap;
+  max-width: 70px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+/* Slot search popup */
+.slot-search-wrap {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 180px;
+  background: #0d1f2f;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  z-index: 30;
+  z-index: 10;
+  display: none;
+}
+
+.player-slot.active .slot-search-wrap {
+  display: block;
+}
+
+.slot-search-wrap input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  color: var(--text);
+  padding: 8px 10px;
+  font-size: 0.82rem;
+  outline: none;
+}
+
+.slot-search-wrap input:focus {
+  border-bottom-color: var(--accent);
+}
+
+.slot-dropdown {
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.slot-dropdown .search-suggestion {
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  color: var(--text);
+  border-bottom: 1px solid rgba(159,187,214,0.08);
+}
+
+.slot-dropdown .search-suggestion:last-child {
+  border-bottom: none;
+}
+
+.slot-dropdown .search-suggestion:hover {
+  background: rgba(75,209,165,0.12);
+  color: var(--accent);
+}
+
+/* Team indicator bar at bottom of field */
 
 .results-head {
   margin-bottom: 10px;
@@ -298,6 +470,264 @@ tbody tr:hover {
   color: var(--danger);
 }
 
+/* ── Player Search Autocomplete ──────────────────────────────────────── */
+
+.player-search-wrap {
+  position: relative;
+}
+
+.player-search-wrap input {
+  width: 100%;
+}
+
+.search-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: #0d1f2f;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  z-index: 100;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.search-suggestion {
+  padding: 9px 12px;
+  font-size: 0.88rem;
+  color: var(--text);
+  cursor: pointer;
+  border-bottom: 1px solid rgba(159, 187, 214, 0.1);
+  transition: background 0.15s ease;
+}
+
+.search-suggestion:last-child {
+  border-bottom: none;
+}
+
+.search-suggestion:hover {
+  background: rgba(75, 209, 165, 0.12);
+  color: var(--accent);
+}
+
+/* ── Lineup Analysis Panel ───────────────────────────────────────────── */
+
+.lineup-analysis {
+  margin-top: 20px;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+
+.lineup-analysis h4 {
+  margin: 16px 0 10px;
+  font-family: "Sora", sans-serif;
+  font-size: 0.95rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* Squad Overall Badge */
+.lineup-analysis-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.lineup-overall {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  background: linear-gradient(135deg, rgba(75, 209, 165, 0.12), rgba(44, 191, 218, 0.08));
+  border: 1px solid rgba(75, 209, 165, 0.35);
+  border-radius: 14px;
+  padding: 12px 22px;
+}
+
+.overall-label {
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.overall-value {
+  font-family: "Sora", sans-serif;
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+}
+
+/* Zone Rating Cards */
+.lineup-zones {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.zone-card {
+  background: rgba(6, 20, 31, 0.75);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+/* Stat Bar */
+.stat-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  height: 10px;
+}
+
+.stat-bar-fill {
+  flex: 1;
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), #2cbfda);
+  border-radius: 999px;
+  min-width: 2px;
+  transition: width 0.4s ease;
+}
+
+.stat-bar span {
+  font-size: 0.8rem;
+  color: var(--text);
+  min-width: 24px;
+  text-align: right;
+}
+
+/* Tournament Prediction Cards */
+.predictions-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.prediction-card {
+  background: rgba(6, 20, 31, 0.75);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color 0.2s ease;
+}
+
+.prediction-card:hover {
+  border-color: rgba(75, 209, 165, 0.4);
+}
+
+.pred-header {
+  font-family: "Sora", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.pred-tier {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  background: rgba(255, 202, 114, 0.15);
+  border: 1px solid rgba(255, 202, 114, 0.35);
+  color: var(--accent-2);
+  align-self: flex-start;
+}
+
+.pred-desc {
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.pred-chance {
+  margin-top: 4px;
+}
+
+.pred-chance > span {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.pred-chance .stat-bar {
+  height: 8px;
+}
+
+.pred-warn {
+  font-size: 0.78rem;
+  color: var(--danger);
+  margin-top: 2px;
+}
+
+/* ── Loading Spinner ──────────────────────────────────────────────────── */
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px;
+  color: var(--muted);
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--line);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Pagination ──────────────────────────────────────────────────────── */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 8px 0;
+}
+
+.pagination button {
+  background: #0d1f2f;
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.pagination button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.pagination button:not(:disabled):hover {
+  border-color: var(--accent);
+}
+
+.pagination span {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
 @keyframes rise {
   from {
     opacity: 0;
@@ -319,7 +749,8 @@ tbody tr:hover {
 }
 
 @media (max-width: 980px) {
-  .control-grid {
+  .control-grid,
+  .compare-grid {
     grid-template-columns: repeat(2, minmax(160px, 1fr));
   }
 
@@ -331,8 +762,16 @@ tbody tr:hover {
     grid-template-columns: 1fr;
   }
 
-  .lineup-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .lineup-zones {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .predictions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .compare-vis {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -341,11 +780,24 @@ tbody tr:hover {
     width: 96vw;
   }
 
-  .control-grid {
+  .control-grid,
+  .compare-grid {
     grid-template-columns: 1fr;
   }
 
-  .lineup-grid {
+  .lineup-zones {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .predictions-grid {
     grid-template-columns: 1fr;
+  }
+
+  .compare-vis {
+    grid-template-columns: 1fr;
+  }
+
+  .radar-wrap {
+    order: -1;
   }
 }

@@ -1,9 +1,9 @@
 // ==========================================
 // 1. IMPORT CÁC MÔ-ĐUN TỪ THƯ MỤC SRC
 // ==========================================
-import { state, rankingScore, rankingLabels } from './src/state.js';
-import { loadAllDatasets, populateSelect, optionsFrom, getFilters, filterPlayers } from './src/utils.js';
-import { drawCharts } from './src/chart.js';
+import { state, rankingLabels } from './src/state.js';
+import { loadAllDatasets, populateSelect, optionsFrom, getFilters, filterPlayers, rankingScore } from './src/utils.js';
+import { drawCharts, initCharts } from './src/chart.js';
 import {
   renderTable,
   buildPlayerSelectOptions,
@@ -13,13 +13,16 @@ import {
   calcLineupOverall,
   calcLineupZoneStats,
   predictTournament,
+  changePage,
+  resetPage,
 } from './src/features.js';
 
 // ==========================================
 // 2. HÀM ĐIỀU PHỐI CHÍNH (CORE COORDINATOR)
 // ==========================================
-export function applyAnalytics() {
+export function applyAnalytics(reset = false) {
   const filters = getFilters();
+  if (reset) resetPage();
 
   // Tính điểm và lọc cầu thủ
   const visible = filterPlayers(state.rawPlayers, filters)
@@ -45,7 +48,7 @@ export function applyAnalytics() {
 // ==========================================
 async function loadDataset() {
   const dataset = document.getElementById("datasetSelect").value;
-  document.getElementById("resultsMeta").textContent = "Loading dataset...";
+  document.getElementById("resultsMeta").innerHTML = `<div class="loading"><div class="spinner"></div><span>Loading dataset...</span></div>`;
   try {
     state.rawPlayers = dataset.includes("fc25") ? state.datasets.fc25 : state.datasets.fc26;
 
@@ -54,7 +57,7 @@ async function loadDataset() {
     populateSelect("nationalityFilter", optionsFrom(state.rawPlayers, "nationality"), "All Nationalities");
 
     buildPlayerSelectOptions();
-    applyAnalytics();
+    applyAnalytics(true);
     buildLineupSlots();
     runCompare();
   } catch (err) {
@@ -73,21 +76,25 @@ async function loadDataset() {
 document.getElementById("datasetSelect").addEventListener("change", loadDataset);
 
 // Nút bấm thủ công
-document.getElementById("applyBtn").addEventListener("click", applyAnalytics);
+document.getElementById("applyBtn").addEventListener("click", () => applyAnalytics(true));
 document.getElementById("compareBtn").addEventListener("click", runCompare);
 document.getElementById("buildLineupBtn").addEventListener("click", buildLineupSlots);
 
 // Reactive UI — cập nhật ngay khi thay đổi bộ lọc
-document.getElementById("rankingSelect").addEventListener("change", applyAnalytics);
-document.getElementById("positionFilter").addEventListener("change", applyAnalytics);
-document.getElementById("leagueFilter").addEventListener("change", applyAnalytics);
-document.getElementById("nationalityFilter").addEventListener("change", applyAnalytics);
-document.getElementById("nameSearch").addEventListener("input", applyAnalytics);
+document.getElementById("rankingSelect").addEventListener("change", () => applyAnalytics(true));
+document.getElementById("positionFilter").addEventListener("change", () => applyAnalytics(true));
+document.getElementById("leagueFilter").addEventListener("change", () => applyAnalytics(true));
+document.getElementById("nationalityFilter").addEventListener("change", () => applyAnalytics(true));
+document.getElementById("nameSearch").addEventListener("input", () => applyAnalytics(true));
 
-// Bảng so sánh cầu thủ
-document.getElementById("compareMode").addEventListener("change", runCompare);
-document.getElementById("comparePlayerA").addEventListener("change", runCompare);
-document.getElementById("comparePlayerB").addEventListener("change", runCompare);
+// Bảng so sánh cầu thủ (runCompare is triggered on selection)
+
+// Phân trang
+document.getElementById("prevPage").addEventListener("click", () => { changePage(-1); applyAnalytics(); });
+document.getElementById("nextPage").addEventListener("click", () => { changePage(1); applyAnalytics(); });
+
+// Khởi tạo chart resize
+initCharts();
 
 // ==========================================
 // 5. ĐIỂM KÍCH HOẠT ĐẦU TIÊN KHI TẢI TRANG
